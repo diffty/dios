@@ -1,4 +1,3 @@
-
 const ECycleMode = {
 	Forward: "forward",
 	Backward: "backward",
@@ -9,37 +8,59 @@ const ECycleMode = {
 class BaseTickerSystem {
 	constructor() {
 		this.componentsStack = [];
-		this.transitionsStack = [];
+        this.transitionsStack = [];
+        
+        this.defaultComponent = new TextTickerComponent("");
+        this.defaultTransition = new SimpleTransitionComponent(2);
 
-		this.defaultComponentDuration = 3.;
-		this.defaultTransitionDuration = 3.;
+		this.defaultComponentDuration = 3000.;  // milliseconds
+		this.defaultTransitionDuration = 3000.;
 
-		this.currentComponent = null;
+		this.currentComponent = this.defaultComponent;
 		this.currentTransition = null;
 
  		this.cycleMode = ECycleMode.Forward;
 
- 		this.lastComponentSwitchTime = -1;
+		this.lastComponentSwitchTime = -1;
+		 
+		this.buffer = "";
 	}
 
-	switchToComponent(component, transition) {
-		if (!transition) {
-			transition = this.popNextTransition();
-		}
-
-		this.lastComponentSwitchTime = Date.now();
-
-		// TODO: SwitchToComponent routine
+	getBuffer() {
+		return this.buffer;
 	}
 
+    // Que faire si on switch depuis rien ? Transition ou pas transition ?
+	switchToComponent(nextComponent, transition) {
+        console.log("<i> Switching to component", nextComponent);
+
+        if (this.currentComponent) {
+            if (!transition) {
+                transition = this.popNextTransition();
+            }
+            
+            transition.onTransitionEndCallback = () => { this.onTransitionEnd() };
+
+            this.currentTransition = transition;
+            this.currentTransition.setComponents(this.currentComponent, nextComponent);
+            this.currentTransition.play();
+        }
+        else {
+            this.currentComponent = nextComponent;
+            this.lastComponentSwitchTime = Date.now();
+        }
+    }
+    
 	switchToNextComponent() {
-
+        var nextComponent = this.popNextComponent();
+        this.switchToComponent(nextComponent)
 	}
 
-	popNextTransition() {
-		var nextTransition = this.transitionsStack.shift();
-		this.transitionsStack.push(nextTransition);
-		return nextTransition;
+	addComponent(newComponent) {
+        this.componentsStack.push(newComponent);
+        if (this.componentsStack.length == 1) {
+            this.switchToComponent(this.componentsStack[0]);
+        }
 	}
 
 	popNextComponent() {
@@ -49,6 +70,24 @@ class BaseTickerSystem {
 		this.componentsStack.push(nextComponent);
 		return nextComponent;
 	}
+
+	popNextTransition() {
+        if (this.transitionsStack.length > 0) {
+            var nextTransition = this.transitionsStack.shift();
+            this.transitionsStack.push(nextTransition);
+            return nextTransition;
+        }
+        else {
+            return this.defaultTransition;
+        }
+	}
+
+    onTransitionEnd() {
+        this.currentComponent = this.currentTransition.componentB;
+        this.currentTransition.reset();
+        this.currentTransition = null;
+        this.lastComponentSwitchTime = Date.now();
+    }
 
 	isComponentTimeOver() {
 		var componentDuration = 0;
@@ -67,13 +106,29 @@ class BaseTickerSystem {
 		return (Date.now() - this.lastComponentSwitchTime) > componentDuration;
 	}
 
-	draw() {
-		
+	update(deltaTime) {
+		if ((!this.currentTransition || !this.currentTransition.isPlaying) && this.isComponentTimeOver()) {
+            console.log("<i> Auto-switching to next component");
+			this.switchToNextComponent();
+        }
+        
+        if (this.currentTransition) {
+            this.currentTransition.update(deltaTime);
+        }
+
+        if (this.currentComponent) {
+            this.currentComponent.update(deltaTime);
+        }
 	}
 
-	update() {
-		if (this.isComponentTimeOver) {
-			this.switchToNextComponent();
-		}
+    draw(deltaTime) {
+        if (this.currentTransition) {
+            this.currentTransition.draw(deltaTime);
+            this.buffer = this.currentTransition.getBuffer();
+        }
+        else if (this.currentComponent) {
+            this.currentComponent.draw(deltaTime);
+            this.buffer = this.currentComponent.getBuffer();
+        }
 	}
 }
