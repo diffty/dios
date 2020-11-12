@@ -3,10 +3,14 @@
 // https://www.codeheroes.fr/2017/12/23/javascript-heritage-multiple/
 
 let Animable = function(superclass) {
+    if (superclass === undefined) {
+        superclass = Object;
+    }
+    
     return class extends superclass {
         constructor(...args) {
             super(args);
-            
+
             this.animProgress = 0.0;    
             this.duration = 2.0;
             this.isPlaying = false;
