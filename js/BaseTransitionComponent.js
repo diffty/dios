@@ -1,20 +1,16 @@
-class BaseTransitionComponent {
+class BaseTransitionComponent extends Animable(BaseBufferComponent) {
     constructor(duration, onTransitionEndCallback) {
+        super();
+
         if (duration == undefined) {
             duration = 5.0;
         }
         
-        this.buffer = "";
+        this.setDuration(duration);
+        this.setOnAnimationEndCallback(onTransitionEndCallback);
+
         this.componentA = null;
         this.componentB = null;
-        this.animProgress = 0.0;
-        this.duration = duration;
-        this.isPlaying = false;
-        this.onTransitionEndCallback = onTransitionEndCallback;
-    }
-
-    getBuffer() {
-        return this.buffer;
     }
 
     play() {
@@ -22,15 +18,14 @@ class BaseTransitionComponent {
             throw "<!!> Missing one or both of the components to transition.";
         }
 
-        this.isPlaying = true;
         console.log("<i> Starting transition between", this.componentA, "and", this.componentB);
+        super.play();
     }
 
     reset() {
-        this.animProgress = 0.0;
         this.componentA = null;
         this.componentB = null;
-        this.isPlaying = false;
+        super.reset()
     }
 
     setComponents(componentA, componentB) {
@@ -38,26 +33,11 @@ class BaseTransitionComponent {
         this.componentB = componentB;
     }
 
-    update(deltaTime) {
-        if (this.isPlaying) {
-            var step = deltaTime / this.duration;
-            this.animProgress += step;
-
-
-            if (this.animProgress > 1.0) {
-                this.animProgress = 1.0;
-                this.isPlaying = false;
-
-                this.onTransitionEnd();
-            }
-        }
-    }
-
     draw(deltaTime) {
         
     }
 
-    onTransitionEnd() {
+    onAnimationEnd() {
         console.log("<i> Finished transition between", this.componentA, "and", this.componentB, "!");
 
         if (this.onTransitionEndCallback) {
