@@ -1,4 +1,4 @@
-class TextTickerComponent extends BaseTickerComponent {
+class TextBufferComponent extends BaseBufferComponent {
     constructor(text) {
         super();
 

@@ -1,4 +1,4 @@
-class BaseTickerComponent {
+class BaseBufferComponent {
     constructor() {
         this.buffer = "";
     }

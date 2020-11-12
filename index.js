@@ -2,9 +2,9 @@ let then = 0;
 
 var tickerSystem = new BaseTickerSystem()
 
-var textComponent1 = new TextTickerComponent("TestText");
-var textComponent2 = new TextTickerComponent("Kikiki");
-var textComponent3 = new TextTickerComponent("Kakaka");
+var textComponent1 = new TextBufferComponent("TestText");
+var textComponent2 = new TextBufferComponent("Kikiki");
+var textComponent3 = new TextBufferComponent("Kakaka");
 
 tickerSystem.transitionsStack.push(new CharClearTransitionComponent(1))
 

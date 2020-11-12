@@ -10,7 +10,7 @@ class BaseTickerSystem {
 		this.componentsStack = [];
         this.transitionsStack = [];
         
-        this.defaultComponent = new TextTickerComponent("");
+        this.defaultComponent = new TextBufferComponent("");
         this.defaultTransition = new SimpleTransitionComponent(2);
 
 		this.defaultComponentDuration = 3000.;  // milliseconds
