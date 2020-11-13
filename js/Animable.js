@@ -15,6 +15,11 @@ let Animable = function(superclass) {
             this.duration = 2.0;
             this.isPlaying = false;
             this.onAnimationEndCallback = null;
+            this.isLooped = false;
+        }
+
+        setLooped(isLooped) {
+            this.isLooped = isLooped;
         }
 
         setDuration(duration) {
@@ -26,12 +31,7 @@ let Animable = function(superclass) {
         }
 
         play() {
-            if (this.componentA == undefined || this.componentB == undefined) {
-                throw "<!!> Missing one or both of the components to transition.";
-            }
-
             this.isPlaying = true;
-            console.log("<i> Starting transition between", this.componentA, "and", this.componentB);
         }
 
         reset() {
@@ -46,12 +46,16 @@ let Animable = function(superclass) {
                 var step = deltaTime / this.duration;
                 this.animProgress += step;
 
-
                 if (this.animProgress > 1.0) {
-                    this.animProgress = 1.0;
-                    this.isPlaying = false;
+                    if (this.isLooped) {
+                        this.animProgress = 0.0;
+                    }
+                    else {
+                        this.animProgress = 1.0;
+                        this.isPlaying = false;
 
-                    this.onAnimationEnd();
+                        this.onAnimationEnd();
+                    }
                 }
             }
         }
@@ -61,6 +65,5 @@ let Animable = function(superclass) {
                 this.onAnimationEndCallback();
             }
         }
-
     };
 };
