@@ -8,6 +8,11 @@ class TextBufferComponent extends BaseBufferComponent {
     }
 
     setText(text) {
-        this.setBuffer(text);
+        this.setRawBuffer(text);
+    }
+
+    draw(deltaTime) {
+        this.buffer = this.rawBuffer;
+        this.applyEffects();
     }
 }   
