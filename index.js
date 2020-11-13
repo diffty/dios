@@ -1,18 +1,26 @@
 let then = 0;
 
-var tickerSystem = new BaseTickerSystem()
+let tickerSystem = new BaseTickerSystem()
 
-var textComponent1 = new TextBufferComponent("TestText");
-var textComponent2 = new TextBufferComponent("Kikiki");
-var textComponent3 = new TextBufferComponent("Kakaka");
+let textComponent1 = new TextBufferComponent("Danny");
+let textComponent2 = new TextBufferComponent("tu es");
+let textComponent3 = new TextBufferComponent("le meilleur");
 
-tickerSystem.transitionsStack.push(new CharClearTransitionComponent(1))
+let effect = new ShiftBufferEffect();
+textComponent1.addEffect(effect);
+
+effect.setDuration(3);
+effect.setLooped(true);
+effect.reset();
+effect.play();
+
+tickerSystem.transitionsStack.push(new CharClearTransitionComponent(1));
 
 tickerSystem.addComponent(textComponent1);
 tickerSystem.addComponent(textComponent2);
 tickerSystem.addComponent(textComponent3);
 
-var outputTest = document.getElementById("output");
+let outputTest = document.getElementById("output");
 
 
 function mainLoop(now) {
