@@ -3,7 +3,10 @@ class CharClearTransitionComponent extends BaseTransitionComponent {
         super(duration, onTransitionEndCallback);
     }
 
-    draw() {
+    draw(deltaTime) {
+        this.componentA.draw();
+        this.componentB.draw();
+        
         var bufferA = this.componentA.getBuffer();
         var bufferB = this.componentB.getBuffer();
 
