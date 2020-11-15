@@ -73,8 +73,10 @@ class BaseTickerSystem {
 
 	popNextTransition() {
         if (this.transitionsStack.length > 0) {
-            var nextTransition = this.transitionsStack.shift();
-            this.transitionsStack.push(nextTransition);
+            let nextTransition = this.transitionsStack.shift();
+            if (!nextTransition.isOneShot) {
+                this.transitionsStack.push(nextTransition);
+            }
             return nextTransition;
         }
         else {
@@ -87,6 +89,7 @@ class BaseTickerSystem {
         this.currentTransition.reset();
         this.currentTransition = null;
         this.lastComponentSwitchTime = Date.now();
+        this.currentComponent.onActive();
     }
 
 	isComponentTimeOver() {

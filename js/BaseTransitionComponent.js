@@ -5,7 +5,8 @@ class BaseTransitionComponent extends Animable(BaseBufferComponent) {
         if (duration == undefined) {
             duration = 5.0;
         }
-        
+
+        this.setIsOneShot(false);
         this.setDuration(duration);
         this.setOnAnimationEndCallback(onTransitionEndCallback);
 
@@ -13,12 +14,16 @@ class BaseTransitionComponent extends Animable(BaseBufferComponent) {
         this.componentB = null;
     }
 
+    setIsOneShot(isOneShot) {
+        this.isOneShot = isOneShot;
+    }
+
     play() {
         if (this.componentA == undefined || this.componentB == undefined) {
             throw "<!!> Missing one or both of the components to transition.";
         }
 
-        console.log("<i> Starting transition between", this.componentA, "and", this.componentB);
+        //console.log("<i> Starting transition between", this.componentA, "and", this.componentB);
         super.play();
     }
 
@@ -38,7 +43,7 @@ class BaseTransitionComponent extends Animable(BaseBufferComponent) {
     }
 
     onAnimationEnd() {
-        console.log("<i> Finished transition between", this.componentA, "and", this.componentB, "!");
+        //console.log("<i> Finished transition between", this.componentA, "and", this.componentB, "!");
 
         if (this.onTransitionEndCallback) {
             this.onTransitionEndCallback();
