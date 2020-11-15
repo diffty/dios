@@ -6,4 +6,8 @@ class BaseBufferEffect /* extends Animable() */ {
     applyEffect(buffer) {
         return buffer;
     }
+
+    update(deltaTime) {
+        
+    }
 }
