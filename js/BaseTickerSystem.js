@@ -32,7 +32,7 @@ class BaseTickerSystem {
 
     // Que faire si on switch depuis rien ? Transition ou pas transition ?
 	switchToComponent(nextComponent, transition) {
-        console.log("<i> Switching to component", nextComponent);
+        //console.log("<i> Switching to component", nextComponent);
 
         if (this.currentComponent) {
             if (!transition) {
@@ -52,7 +52,7 @@ class BaseTickerSystem {
     }
     
 	switchToNextComponent() {
-        var nextComponent = this.popNextComponent();
+        let nextComponent = this.popNextComponent();
         this.switchToComponent(nextComponent)
 	}
 
@@ -66,7 +66,7 @@ class BaseTickerSystem {
 	popNextComponent() {
 		// TODO: tester si component à usage unique, auquel cas faut pas le remettre
 		// au cul de la pile
-		var nextComponent = this.componentsStack.shift();
+		let nextComponent = this.componentsStack.shift();
 		this.componentsStack.push(nextComponent);
 		return nextComponent;
 	}
@@ -93,7 +93,7 @@ class BaseTickerSystem {
     }
 
 	isComponentTimeOver() {
-		var componentDuration = 0;
+		let componentDuration = 0;
 
 		if (!this.currentComponent) {
 			return null;
@@ -111,7 +111,7 @@ class BaseTickerSystem {
 
 	update(deltaTime) {
 		if ((!this.currentTransition || !this.currentTransition.isPlaying) && this.isComponentTimeOver()) {
-            console.log("<i> Auto-switching to next component");
+            //console.log("<i> Auto-switching to next component");
 			this.switchToNextComponent();
         }
         

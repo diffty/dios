@@ -7,14 +7,14 @@ class CharClearTransitionComponent extends BaseTransitionComponent {
         this.componentA.draw();
         this.componentB.draw();
         
-        var bufferA = this.componentA.getBuffer();
-        var bufferB = this.componentB.getBuffer();
+        let bufferA = this.componentA.getBuffer();
+        let bufferB = this.componentB.getBuffer();
 
-        var maxBufferSize = Math.max(bufferA.length, bufferB.length);
+        let maxBufferSize = Math.max(bufferA.length, bufferB.length);
 
-        var v = (0.5 - Math.abs(this.animProgress - 0.5))*2;
+        let v = (0.5 - Math.abs(this.animProgress - 0.5))*2;
 
-        var hiddenCharNum = maxBufferSize * v;
+        let hiddenCharNum = maxBufferSize * v;
         
         if (this.animProgress <= 0.5) {
             this.buffer = ['#'.repeat(hiddenCharNum), bufferA.slice(hiddenCharNum, Math.max(0, bufferA.length))].join('');
