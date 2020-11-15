@@ -7,7 +7,7 @@ class BaseTransitionComponent extends Animable(BaseBufferComponent) {
         }
 
         this.setIsOneShot(false);
-        this.setDuration(duration);
+        this.setAnimDuration(duration);
         this.setOnAnimationEndCallback(onTransitionEndCallback);
 
         this.componentA = null;

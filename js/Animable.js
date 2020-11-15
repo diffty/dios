@@ -12,7 +12,7 @@ let Animable = function(superclass) {
             super(args);
 
             this.animProgress = 0.0;    
-            this.duration = 2.0;
+            this.animDuration = 2.0;
             this.isPlaying = false;
             this.onAnimationEndCallback = null;
             this.isLooped = false;
@@ -22,8 +22,8 @@ let Animable = function(superclass) {
             this.isLooped = isLooped;
         }
 
-        setDuration(duration) {
-            this.duration = duration;
+        setAnimDuration(animDuration) {
+            this.animDuration = animDuration;
         }
 
         setOnAnimationEndCallback(onAnimationEndCallback) {
@@ -41,7 +41,7 @@ let Animable = function(superclass) {
 
         update(deltaTime) {
             if (this.isPlaying) {
-                let step = deltaTime / this.duration;
+                let step = deltaTime / this.animDuration;
                 this.animProgress += step;
 
                 if (this.animProgress > 1.0) {
