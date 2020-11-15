@@ -6,33 +6,33 @@ let then = 0;
 let twitchIfc = new TwitchInterface(TWITCH_CLIENT_ID);
 console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
 
-const tickerSystemInstance = new BaseTickerSystem()
+const tickerSystemInstance = new BaseTickerSystem(16)
 //Object.freeze(tickerSystemInstance);
 //export default tickerSystemInstance;
 
-let textComponent1 = new TextBufferComponent("- Last Follows -");
-let twitchComponent = new TwitchFollowsComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID);
-let textComponent2 = new TextBufferComponent("- Now Playing -");
-let textComponent3 = new TextBufferComponent("XIII");
-let twitchViewersComponent = new TwitchViewersComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID);
+let followsTitleComponent = new TextBufferComponent("- Last Follows -");
+let followsComponent = new TwitchFollowsComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
+let nowPlayingTitleComponent = new TextBufferComponent("- Now Playing -");
+let nowPlayingComponent = new TextBufferComponent("XIII");
+let viewersComponent = new TwitchViewersComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID);
 
-textComponent1.setNextTransition(new SimpleTransitionComponent(3));
+//followsTitleComponent.setNextTransition(new SimpleTransitionComponent(3));
 
-let effect = new ShiftBufferEffect();
-effect.setSpeed(5);
-effect.reset();
-effect.play();
+//let effect = new ShiftBufferEffect();
+//effect.setSpeed(3);
+//effect.reset();
+//effect.play();
 
-twitchComponent.addEffect(effect);
-twitchComponent.addEffect(new ShrinkBufferEffect(16));
+//followsComponent.addEffect(effect);
+followsComponent.addEffect(new ShrinkBufferEffect(tickerSystemInstance.tickerSize));
 
 tickerSystemInstance.transitionsStack.push(new CharClearTransitionComponent(1));
 
-tickerSystemInstance.addComponent(textComponent1);
-tickerSystemInstance.addComponent(twitchComponent);
-tickerSystemInstance.addComponent(textComponent2);
-tickerSystemInstance.addComponent(textComponent3);
-tickerSystemInstance.addComponent(twitchViewersComponent);
+tickerSystemInstance.addComponent(followsTitleComponent);
+tickerSystemInstance.addComponent(followsComponent);
+tickerSystemInstance.addComponent(nowPlayingTitleComponent);
+tickerSystemInstance.addComponent(nowPlayingComponent);
+tickerSystemInstance.addComponent(viewersComponent);
 
 let outputTest = document.getElementById("output");
 
