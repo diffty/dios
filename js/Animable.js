@@ -36,14 +36,12 @@ let Animable = function(superclass) {
 
         reset() {
             this.animProgress = 0.0;
-            this.componentA = null;
-            this.componentB = null;
             this.isPlaying = false;
         }
 
         update(deltaTime) {
             if (this.isPlaying) {
-                var step = deltaTime / this.duration;
+                let step = deltaTime / this.duration;
                 this.animProgress += step;
 
                 if (this.animProgress > 1.0) {
