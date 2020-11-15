@@ -60,14 +60,11 @@ class BaseTickerSystem {
 
 	addComponent(newComponent) {
         this.componentsStack.push(newComponent);
-        if (this.componentsStack.length == 1) {
-            this.switchToComponent(this.componentsStack[0]);
-        }
 	}
 
 	popNextComponent() {
 		// TODO: tester si component à usage unique, auquel cas faut pas le remettre
-		// au cul de la pile
+        // au cul de la pile
 		let nextComponent = this.componentsStack.shift();
 		this.componentsStack.push(nextComponent);
 		return nextComponent;
