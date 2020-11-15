@@ -26,6 +26,6 @@ class TwitchFollowsComponent extends BaseBufferComponent {
 
     draw(deltaTime) {
         this.buffer = this.rawBuffer;
-        //this.applyEffects();
+        this.applyEffects();
     }
 }
