@@ -8,7 +8,7 @@ class TextBufferComponent extends BaseBufferComponent {
     }
 
     setText(text) {
-        this.setRawBuffer(text);
+        this.setBuffer(text);
     }
 
     draw(deltaTime) {
