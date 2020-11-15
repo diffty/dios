@@ -6,7 +6,7 @@ const ECycleMode = {
 
 
 class BaseTickerSystem {
-	constructor() {
+	constructor(tickerSize) {
 		this.componentsStack = [];
         this.transitionsStack = [];
         
@@ -21,7 +21,9 @@ class BaseTickerSystem {
 
  		this.cycleMode = ECycleMode.Forward;
 
-		this.lastComponentSwitchTime = -1;
+        this.lastComponentSwitchTime = -1;
+        
+        this.tickerSize = tickerSize;
 		 
 		this.buffer = "";
 	}
