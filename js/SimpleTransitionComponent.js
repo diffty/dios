@@ -4,6 +4,9 @@ class SimpleTransitionComponent extends BaseTransitionComponent {
     }
 
     draw(deltaTime) {
+        this.componentA.draw();
+        this.componentB.draw();
+        
         if (this.animProgress < 0.5) {
             this.buffer = this.componentA.getBuffer();
         }
