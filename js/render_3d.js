@@ -4,7 +4,7 @@ import { EffectComposer } from './libs/three/examples/jsm/postprocessing/EffectC
 import { RenderPass } from './libs/three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from './libs/three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from './libs/three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { UnrealBloomPassAlpha } from './libs/three/examples/jsm/postprocessing/UnrealBloomPassAlpha.js';
+import { UnrealBloomPassAlpha } from './postprocessing/UnrealBloomPassAlpha.js';
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 
 
