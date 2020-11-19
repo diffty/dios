@@ -5,7 +5,6 @@ import { RenderPass } from './libs/three/examples/jsm/postprocessing/RenderPass.
 import { ShaderPass } from './libs/three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from './libs/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { UnrealBloomPassAlpha } from './libs/three/examples/jsm/postprocessing/UnrealBloomPassAlpha.js';
-import { BloomPass } from './libs/three/examples/jsm/postprocessing/BloomPass.js';
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 
 
