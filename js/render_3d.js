@@ -1,3 +1,5 @@
+import config from '../config.js'
+
 import * as THREE from './libs/three/build/three.module.js';
 
 import { EffectComposer } from './libs/three/examples/jsm/postprocessing/EffectComposer.js';
@@ -6,7 +8,6 @@ import { ShaderPass } from './libs/three/examples/jsm/postprocessing/ShaderPass.
 import { UnrealBloomPass } from './libs/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { UnrealBloomPassAlpha } from './postprocessing/UnrealBloomPassAlpha.js';
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
-
 
 const renderWidth = 1920;
 const renderHeight = 1080;
@@ -99,19 +100,16 @@ composer.addPass( bloomPass );
 
 
 // ******** DIOS STUFF ********
-const TWITCH_USER_ID = 27497503; // 64670756: kitcate / 27497503: diffty
-const TWITCH_CLIENT_ID = "ulv1v7toq6fwfps9pmcrnlg6r6t7ex";
-
-let twitchIfc = new TwitchInterface(TWITCH_CLIENT_ID);
+let twitchIfc = new TwitchInterface(config.TWITCH_CLIENT_ID);
 //console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
 
 const tickerSystemInstance = new BaseTickerSystem(16)
 
 let followsTitleComponent = new TextBufferComponent("- Last Follows -");
-let followsComponent = new TwitchFollowsComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
+let followsComponent = new TwitchFollowsComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
 let nowPlayingTitleComponent = new TextBufferComponent("- Now Playing -");
-let nowPlayingComponent = new TextBufferComponent("TECH STUFF");
-let viewersComponent = new TwitchViewersComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID);
+let nowPlayingComponent = new TextBufferComponent(config.NOW_PLAYING_TEXT);
+let viewersComponent = new TwitchViewersComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID);
 
 followsComponent.addEffect(new ShrinkBufferEffect(tickerSystemInstance.tickerSize));
 

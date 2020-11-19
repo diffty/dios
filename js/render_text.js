@@ -1,20 +1,20 @@
-const TWITCH_USER_ID = 27497503; // 64670756: kitcate / 27497503: diffty
-const TWITCH_CLIENT_ID = "ulv1v7toq6fwfps9pmcrnlg6r6t7ex";
+import config from '../config.js'
+
 
 let then = 0;
 
-let twitchIfc = new TwitchInterface(TWITCH_CLIENT_ID);
-console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
+let twitchIfc = new TwitchInterface(config.TWITCH_CLIENT_ID);
+//console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
 
 const tickerSystemInstance = new BaseTickerSystem(16)
 //Object.freeze(tickerSystemInstance);
 //export default tickerSystemInstance;
 
 let followsTitleComponent = new TextBufferComponent("- Last Follows -");
-let followsComponent = new TwitchFollowsComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
+let followsComponent = new TwitchFollowsComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
 let nowPlayingTitleComponent = new TextBufferComponent("- Now Playing -");
-let nowPlayingComponent = new TextBufferComponent("XIII");
-let viewersComponent = new TwitchViewersComponent(TWITCH_USER_ID, TWITCH_CLIENT_ID);
+let nowPlayingComponent = new TextBufferComponent(config.NOW_PLAYING_TEXT);
+let viewersComponent = new TwitchViewersComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID);
 
 //followsTitleComponent.setNextTransition(new SimpleTransitionComponent(3));
 
