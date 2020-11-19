@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>D.I.O.S</title>
+        <style>
+            body { margin: 0; background-color: white; font-family: 'Courier New', Courier, monospace; }
+            canvas {
+                display: block;
+                font-family:dseg;
+            }
+            #load {
+                font-family:dseg;
+                visibility: hidden;
+                height: 0px;
+            }
+            @font-face {
+                font-family:dseg; 
+                src: url('./fonts/fonts-DSEG_v046/DSEG14-Modern/DSEG14Modern-Regular.ttf');
+            }
+        </style>
+    </head>
+    <body>
+        <div id="output"></div>
+        <div id="load">loading</div> <!-- load font -->
+        <canvas id="2dtext" width="1024" height="1024" style="display: none;"></canvas>
+
+        <script src="js/libs/three.js"></script>
+
+        <script src="js/render_3d_lcddisplay.js"></script>
+
+        <script src="js/libs/jquery.min.js"></script>
+
+        <script src="js/interface_twitch.js"></script>
+
+        <script src="js/mix_animable.js"></script>
+        <script src="js/mix_stepanimable.js"></script>
+
+        <script src="js/fx_buffer_base.js"></script>
+        <script src="js/fx_buffer_shift.js"></script>
+        <script src="js/fx_buffer_shrink.js"></script>
+
+        <script src="js/component_buffer_base.js"></script>
+        <script src="js/component_buffer_text.js"></script>
+        <script src="js/component_buffer_twitchfollowsscroller.js"></script>
+        <script src="js/component_buffer_twitchfollows.js"></script>
+        <script src="js/component_buffer_twitchviewers.js"></script>
+        
+        <script src="js/transition_buffer_base.js"></script>
+        <script src="js/transition_buffer_simple.js"></script>
+        <script src="js/transition_buffer_charclear.js"></script>
+
+        <script src="js/system_ticker_base.js"></script>
+
+        <script src="js/render_3d.js" type="module"></script>
+    </body>
+</html>
