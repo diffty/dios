@@ -29,7 +29,7 @@ class LcdDisplay {
         this.canvasElement = document.getElementById("2dtext");
         this.canvasContext = this.canvasElement.getContext("2d");
         
-        var f = new FontFace('dseg', 'url(/fonts/fonts-DSEG_v046/DSEG14-Modern/DSEG14Modern-Regular.ttf)');
+        var f = new FontFace('dseg', 'url(/fonts/dseg/DSEG14Modern-Regular.ttf)');
         
         f.load().then(() => {
             this.canvasContext.font = "72px dseg";
