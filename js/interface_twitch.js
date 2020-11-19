@@ -1,9 +1,38 @@
 class TwitchInterface {
-    constructor(clientId) {
+    constructor(clientId, secretId, bearerId) {
         this.clientId = clientId;
+        this.secretId = secretId;
+        this.bearerId = bearerId;
+
+        this.scopeList = [
+            "bits:read",
+            "channel:read:redemptions",
+            "channel:read:hype_train",
+            "channel:read:subscriptions",
+            "user:read:broadcast",
+        ];
 
         this.watchUserId = -1; 
         this.watchUserFollowers = [];
+    }
+
+    generateHeader() {
+        return {  
+            "Authorization": "Bearer " + this.bearerId,
+            "Client-ID": this.clientId,
+        };
+    }
+
+    getAccessToken(callback) {
+        $.ajax({
+            type: "POST",
+            url: "https://id.twitch.tv/oauth2/token?client_id=" + this.clientId + "&client_secret=" + this.secretId + "&grant_type=client_credentials&scope=" + this.scopeList.join(" "),
+            dataType: "json",
+            error: function(response) { console.log("Failed getAccessToken: status " + response.status) },
+            success: function(response) {
+                callback(response);
+            }
+        });
     }
 
     getUsersFromName(userNameList, callback) {
@@ -11,10 +40,7 @@ class TwitchInterface {
             type: "GET",
             url: "https://api.twitch.tv/helix/users?" + userNameList.map(uid => "login=" + uid.toString()).join(","),
             dataType: "json",
-            headers: {  
-                "Authorization": "Bearer ar4mit1ahvlil3tx10fawz0qynbdo0",
-                "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5", //this.clientId,
-            },
+            headers: this.generateHeader(),
             error: function(response) { console.log("Failed getUsersFromName: status " + response.status) },
             success: function(response) {
                 callback(response.data);
@@ -28,10 +54,7 @@ class TwitchInterface {
             type: "GET",
             url: "https://api.twitch.tv/helix/users?" + userIdList.map(uid => "id=" + uid.toString()).join("&"),
             dataType: "json",  
-            headers:  {  
-                "Authorization": "Bearer ar4mit1ahvlil3tx10fawz0qynbdo0",
-                "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5", //this.clientId,
-            },
+            headers: this.generateHeader(),
             error: function(response) { console.log("Failed getUsersFromId: status " + response.status) },
             success: function(response) {
                 callback(response.data);
@@ -44,10 +67,7 @@ class TwitchInterface {
             type: "GET",
             url: "https://api.twitch.tv/helix/users/follows?to_id=" + userId.toString(),
             dataType: "json",
-            headers:  {
-                "Authorization": "Bearer ar4mit1ahvlil3tx10fawz0qynbdo0",
-                "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5", //this.clientId,
-            },
+            headers: this.generateHeader(),
             error: function(response) { console.log("Failed getFollowers: status " + response.status) },
             success: function(response) {
                 callback(response.data);
@@ -60,10 +80,7 @@ class TwitchInterface {
             type: "GET",
             url: "https://api.twitch.tv/helix/streams?user_id=" + userId.toString(),
             dataType: "json",
-            headers:  {
-                "Authorization": "Bearer ar4mit1ahvlil3tx10fawz0qynbdo0",
-                "Client-ID": "gp762nuuoqcoxypju8c569th9wz7q5", //this.clientId,
-            },
+            headers: this.generateHeader(),
             error: function(response) { console.log("Failed getViewersCount: status " + response.status) },
             success: function(response) {
                 callback(response.data);

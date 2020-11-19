@@ -100,16 +100,19 @@ composer.addPass( bloomPass );
 
 
 // ******** DIOS STUFF ********
-let twitchIfc = new TwitchInterface(config.TWITCH_CLIENT_ID);
+let twitchIfc = new TwitchInterface(config.TWITCH_CLIENT_ID, config.TWITCH_SECRET_ID, config.TWITCH_BEARER_TOKEN);
+//twitchIfc.getAccessToken((res) => {
+//    console.log("Access token :", res);
+//});
 //console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
 
 const tickerSystemInstance = new BaseTickerSystem(16)
 
 let followsTitleComponent = new TextBufferComponent("- Last Follows -");
-let followsComponent = new TwitchFollowsComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID, tickerSystemInstance.tickerSize);
+let followsComponent = new TwitchFollowsComponent(twitchIfc, config.TWITCH_USER_ID, tickerSystemInstance.tickerSize);
 let nowPlayingTitleComponent = new TextBufferComponent("- Now Playing -");
 let nowPlayingComponent = new TextBufferComponent(config.NOW_PLAYING_TEXT);
-let viewersComponent = new TwitchViewersComponent(config.TWITCH_USER_ID, config.TWITCH_CLIENT_ID);
+let viewersComponent = new TwitchViewersComponent(twitchIfc, config.TWITCH_USER_ID);
 
 followsComponent.addEffect(new ShrinkBufferEffect(tickerSystemInstance.tickerSize));
 

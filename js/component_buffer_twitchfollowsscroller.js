@@ -1,11 +1,10 @@
 class TwitchFollowsScrollerComponent extends BaseBufferComponent {
-    constructor(userId, clientId) {
+    constructor(twitchInterface, userId) {
         super();
 
         this.userId = userId;
-        this.clientId = clientId;
 
-        this.twitchInterface = new TwitchInterface(clientId);
+        this.twitchInterface = twitchInterface;
         
         this.followers = [];
 

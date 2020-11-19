@@ -1,11 +1,10 @@
 class TwitchFollowsComponent extends Animable(BaseBufferComponent) {
-    constructor(userId, clientId, tickerSize) {
+    constructor(twitchInterface, userId, tickerSize) {
         super();
 
         this.userId = userId;
-        this.clientId = clientId;
 
-        this.twitchInterface = new TwitchInterface(clientId);
+        this.twitchInterface = twitchInterface;
         
         this.followers = [];
         this.currentFollower = null;
