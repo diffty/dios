@@ -4,8 +4,6 @@ import * as THREE from './libs/three/build/three.module.js';
 
 import { EffectComposer } from './libs/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from './libs/three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from './libs/three/examples/jsm/postprocessing/ShaderPass.js';
-import { UnrealBloomPass } from './libs/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { UnrealBloomPassAlpha } from './postprocessing/UnrealBloomPassAlpha.js';
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -101,6 +99,7 @@ composer.addPass( bloomPass );
 
 // ******** DIOS STUFF ********
 let twitchIfc = new TwitchInterface(config.TWITCH_CLIENT_ID, config.TWITCH_SECRET_ID, config.TWITCH_BEARER_TOKEN);
+let lastFmIfc = new LastFmInterface(config.LASTFM_CLIENT_ID, config.LASTFM_SECRET_ID);
 //twitchIfc.getAccessToken((res) => {
 //    console.log("Access token :", res);
 //});
@@ -110,18 +109,29 @@ const tickerSystemInstance = new BaseTickerSystem(16)
 
 let followsTitleComponent = new TextBufferComponent("- Last Follows -");
 let followsComponent = new TwitchFollowsComponent(twitchIfc, config.TWITCH_USER_ID, tickerSystemInstance.tickerSize);
-let nowPlayingTitleComponent = new TextBufferComponent("- Now Playing -");
-let nowPlayingComponent = new TextBufferComponent(config.NOW_PLAYING_TEXT);
+let rightNowTitleComponent = new TextBufferComponent("- Right now -");
+let rightNowComponent = new TextBufferComponent(config.NOW_PLAYING_TEXT);
+let nowPlayingTitleComponent = new TextBufferComponent("- Now playing -");
+let nowPlayingComponent = new LastFmComponent(lastFmIfc, "diffty");
 let viewersComponent = new TwitchViewersComponent(twitchIfc, config.TWITCH_USER_ID);
+
+nowPlayingTitleComponent.doShow = () => { return nowPlayingComponent.doShow(); }
+
+let bounceEffect = new BounceBufferEffect(tickerSystemInstance.tickerSize);
+bounceEffect.setLooped(true);
+bounceEffect.play();
+nowPlayingComponent.addEffect(bounceEffect);
 
 followsComponent.addEffect(new ShrinkBufferEffect(tickerSystemInstance.tickerSize));
 
 tickerSystemInstance.transitionsStack.push(new CharClearTransitionComponent(1));
 
-tickerSystemInstance.addComponent(followsTitleComponent);
-tickerSystemInstance.addComponent(followsComponent);
+tickerSystemInstance.addComponent(rightNowTitleComponent);
+tickerSystemInstance.addComponent(rightNowComponent);
 tickerSystemInstance.addComponent(nowPlayingTitleComponent);
 tickerSystemInstance.addComponent(nowPlayingComponent);
+tickerSystemInstance.addComponent(followsTitleComponent);
+tickerSystemInstance.addComponent(followsComponent);
 tickerSystemInstance.addComponent(viewersComponent);
 
 
