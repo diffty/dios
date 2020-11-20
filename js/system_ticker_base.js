@@ -54,8 +54,16 @@ class BaseTickerSystem {
     }
     
 	switchToNextComponent() {
-        let nextComponent = this.popNextComponent();
-        this.switchToComponent(nextComponent)
+        let nextComponent = null;
+
+        while (nextComponent == null) {
+            nextComponent = this.popNextComponent();
+            if (!nextComponent.doShow()) {
+                nextComponent = null;
+            }
+        }
+        
+        this.switchToComponent(nextComponent);
 	}
 
 	addComponent(newComponent) {

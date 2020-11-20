@@ -17,6 +17,10 @@ class BaseBufferComponent {
         return this.buffer;
     }
 
+    doShow() {
+        return true;
+    }
+
     addEffect(effect) {
         this.effects.push(effect);
     }
