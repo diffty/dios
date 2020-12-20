@@ -114,7 +114,20 @@ class BaseTickerSystem {
 		}
 
 		return (Date.now() - this.lastComponentSwitchTime) > componentDuration;
-	}
+    }
+    
+    refreshComponents() {
+        for (let i in this.componentsStack) {
+            let component = this.componentsStack[i];
+            if (component.refreshFrequency >= 0) {
+                let currentTime = Date.now();
+                if (currentTime - component.lastRefreshTime > component.refreshFrequency) {
+                    component.refresh()
+                    component.lastRefreshTime = currentTime;
+                }
+            }
+        }
+    }
 
 	update(deltaTime) {
 		if ((!this.currentTransition || !this.currentTransition.isPlaying) && this.isComponentTimeOver()) {
@@ -129,6 +142,8 @@ class BaseTickerSystem {
         if (this.currentComponent) {
             this.currentComponent.update(deltaTime);
         }
+
+        this.refreshComponents();
 	}
 
     draw(deltaTime) {

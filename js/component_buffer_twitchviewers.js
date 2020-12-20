@@ -2,6 +2,9 @@ class TwitchViewersComponent extends BaseBufferComponent {
     constructor(twitchInterface, userId) {
         super();
 
+        this.refreshFrequency = 20000;
+        this.lastRefreshTime = -1;
+
         this.userId = userId;
         this.twitchInterface = twitchInterface;
 
@@ -24,5 +27,9 @@ class TwitchViewersComponent extends BaseBufferComponent {
     draw(deltaTime) {
         this.buffer = this.rawBuffer;
         this.applyEffects();
+    }
+
+    refresh() {
+        this.updateViewerCount();
     }
 }

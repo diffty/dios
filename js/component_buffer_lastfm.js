@@ -2,7 +2,10 @@ class LastFmComponent extends BaseBufferComponent {
     constructor(lastFmIfc, userId) {
         super();
 
-        this.duration = 10000;
+        this.duration = 8000;
+        
+        this.refreshFrequency = 20000;
+        this.lastRefreshTime = -1;
 
         this.userId = userId;
         this.lastFmIfc = lastFmIfc;
@@ -25,19 +28,26 @@ class LastFmComponent extends BaseBufferComponent {
                     this.lastTrack = trackList[0];
                     if (this.lastTrack["@attr"] != undefined && this.lastTrack["@attr"].nowplaying) {
                         this.trackPlaying = this.lastTrack;
-                        this.updateNowPlaying()
                     }
                 }
+                this.updateNowPlaying();
             }
         )
     }
 
     updateNowPlaying() {
-        if (this.lastTrack) {
+        if (this.trackPlaying) {
             var artistName = this.lastTrack.artist["#text"];
             var trackName = this.lastTrack.name;
             this.setBuffer(artistName + " - " + trackName);
         }
+        else {
+            this.setBuffer("");
+        }
+    }
+
+    refresh() {
+        this.updateLastTrack();
     }
 
     draw(deltaTime) {

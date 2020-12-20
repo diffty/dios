@@ -6,6 +6,8 @@ class BaseBufferComponent {
         this.buffer = "";
         this.effects = [];
         this.nextTransition = null;
+        this.refreshFrequency = -1;
+        this.lastRefreshTime = -1;
     }
 
     setBuffer(newBuffer) {
@@ -34,6 +36,10 @@ class BaseBufferComponent {
     setNextTransition(nextTransition) {
         this.nextTransition = nextTransition;
         this.nextTransition.setIsOneShot(true);
+    }
+
+    refresh() {
+        
     }
     
     update(deltaTime) {
