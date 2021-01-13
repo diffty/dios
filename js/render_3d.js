@@ -105,6 +105,10 @@ let lastFmIfc = new LastFmInterface(config.LASTFM_CLIENT_ID, config.LASTFM_SECRE
 //});
 //console.log(twitchIfc.getUsersFromName(["diffty"], (res) => { console.log(res); }));
 
+twitchIfc.getAccessToken((caca) => {
+    console.log(caca);
+})
+
 const tickerSystemInstance = new BaseTickerSystem(16)
 
 let followsTitleComponent = new TextBufferComponent("- Last Follows -");
@@ -133,6 +137,30 @@ tickerSystemInstance.addComponent(nowPlayingComponent);
 tickerSystemInstance.addComponent(followsTitleComponent);
 tickerSystemInstance.addComponent(followsComponent);
 tickerSystemInstance.addComponent(viewersComponent);
+
+let twitchPubSubIfc = new TwitchPubSubInterface(config.TWITCH_BEARER_TOKEN, (msg) => {
+    if (msg.data && msg.data.topic) {
+        let msgTopic = msg.data.topic;
+        let msgContent = JSON.parse(msg.data.message);
+
+        if (msgContent.type == "reward-redeemed") {
+            let redemptionMsgComponent = new TextBufferComponent(
+                `${msgContent.data.redemption.user.display_name} a recupere ${msgContent.data.redemption.reward.title} !`
+            );
+            redemptionMsgComponent.setIsOneShot(true);
+            redemptionMsgComponent.duration = 5000;
+
+            let bounceEffect = new BounceBufferEffect(tickerSystemInstance.tickerSize);
+            bounceEffect.setLooped(true);
+            bounceEffect.play();
+            redemptionMsgComponent.addEffect(bounceEffect);
+
+            tickerSystemInstance.componentsStack.unshift(redemptionMsgComponent);
+            tickerSystemInstance.switchToNextComponent();
+        }
+    }
+})
+twitchPubSubIfc.connect();
 
 
 function animate(now) {

@@ -8,6 +8,11 @@ class BaseBufferComponent {
         this.nextTransition = null;
         this.refreshFrequency = -1;
         this.lastRefreshTime = -1;
+        this.isOneShot = false;
+    }
+
+    setIsOneShot(isOneShot) {
+        this.isOneShot = isOneShot;
     }
 
     setBuffer(newBuffer) {

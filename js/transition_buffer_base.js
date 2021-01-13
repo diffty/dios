@@ -14,10 +14,6 @@ class BaseTransitionComponent extends Animable(BaseBufferComponent) {
         this.componentB = null;
     }
 
-    setIsOneShot(isOneShot) {
-        this.isOneShot = isOneShot;
-    }
-
     play() {
         if (this.componentA == undefined || this.componentB == undefined) {
             throw "<!!> Missing one or both of the components to transition.";

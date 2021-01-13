@@ -73,8 +73,10 @@ class BaseTickerSystem {
 	popNextComponent() {
 		// TODO: tester si component à usage unique, auquel cas faut pas le remettre
         // au cul de la pile
-		let nextComponent = this.componentsStack.shift();
-		this.componentsStack.push(nextComponent);
+        let nextComponent = this.componentsStack.shift();
+        if (!nextComponent.isOneShot) {
+            this.componentsStack.push(nextComponent);
+        }
 		return nextComponent;
 	}
 
