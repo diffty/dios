@@ -157,6 +157,12 @@ let twitchPubSubIfc = new TwitchPubSubInterface(config.TWITCH_BEARER_TOKEN, (msg
 
             tickerSystemInstance.componentsStack.unshift(redemptionMsgComponent);
             tickerSystemInstance.switchToNextComponent();
+
+            if (msgContent.data.redemption.reward.title == "PimpMyOverlay") {
+                let userMessage = msgContent.data.redemption.user_input;
+                console.log(userMessage);
+                lcdDisplay.setColor(userMessage);
+            }
         }
     }
 })
