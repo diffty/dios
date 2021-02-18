@@ -1,4 +1,4 @@
-class TwitchInterface {
+export class TwitchInterface {
     constructor(clientId, secretId, bearerId) {
         this.clientId = clientId;
         this.secretId = secretId;
@@ -95,9 +95,19 @@ class TwitchInterface {
                 this.watchUserId = userId;
             }
             else {
-                if (this.watchUserFollowers[0].from_id != followersList[0].from_id) {
+                if (this.watchUserFollowers[0].followed_at != followersList[0].followed_at) {
+                    let newFollows = [];
+                    let oldFollowersList = this.watchUserFollowers.map(u => u.from_name);
+                    for (let i in followersList) {
+                        let user = followersList[i];
+                        if (!oldFollowersList.includes(user.from_name) && Date.parse(user.followed_at) > Date.parse(this.watchUserFollowers[0].followed_at)) {
+                            newFollows.push(user);
+                        }
+                    }
                     this.watchUserFollowers = followersList;
-                    onNewFollowerCallback(followersList[0]);
+                    if (oldFollowersList.length > 0) {
+                        onNewFollowerCallback(newFollows);
+                    }
                 }
             }
         });
