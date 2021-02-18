@@ -10,8 +10,27 @@ import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 import { TwitchInterface } from './interface_twitch.js'
 
 
+// CONSTS
 const renderWidth = 1920;
 const renderHeight = 1080;
+
+const COLOR_TABLE = {
+    "red": "#FF0000",
+    "green": "#00FF00",
+    "blue": "#0000FF",
+    "hum": "#ba34eb",
+    "captainhum": "#ba34eb",
+    "kit": "#C0C0C0",
+    "kitcate": "#C0C0C0",
+    "chanella": "#FD6C9E",
+    "typh": "#FD6C9E",
+}
+
+const HEX_LAXIST_REGEX = new RegExp(/#?([a-z0-9]{6})/i);
+const HEX_REAL_REGEX = new RegExp(/#?([a-f0-9]{6})/i);
+
+
+
 
 
 // VARS
@@ -206,8 +225,29 @@ let twitchPubSubIfc = new TwitchPubSubInterface(config.TWITCH_BEARER_TOKEN, (msg
 
             if (msgContent.data.redemption.reward.title == "PimpMyOverlay") {
                 let userMessage = msgContent.data.redemption.user_input;
-                console.log(userMessage);
-                lcdDisplay.setColor(userMessage);
+                let regRes = HEX_LAXIST_REGEX[Symbol.match](userMessage);
+
+                if (regRes) {
+                    if (regRes[1].toUpperCase() == "NI69CE") {
+                        lcdDisplay.setColorFunc((i, c) => {
+                            let timeOffset = Math.floor(Date.now() * 0.01) % 16;
+                            let idx = parseInt(i);
+                            return `hsl(${350. * ((idx + timeOffset) / 16.)}, 100%, 50%)`;
+                        });
+                        lcdDisplay.colorMode = "func";
+                    }
+                    else {
+                        let regRes = HEX_REAL_REGEX[Symbol.match](userMessage);
+                        if (regRes) {
+                            lcdDisplay.setColor("#" + regRes[1].toUpperCase());
+                            lcdDisplay.colorMode = "hex";
+                        }
+                    }
+                }
+                else if (userMessage in COLOR_TABLE) {
+                    lcdDisplay.setColor(COLOR_TABLE[userMessage]);
+                    lcdDisplay.colorMode = "hex";
+                }
             }
 
             if (msgContent.data.redemption.reward.title == "SWAPITY SWAP") {
