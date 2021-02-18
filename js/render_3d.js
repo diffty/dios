@@ -7,12 +7,58 @@ import { RenderPass } from './libs/three/examples/jsm/postprocessing/RenderPass.
 import { UnrealBloomPassAlpha } from './postprocessing/UnrealBloomPassAlpha.js';
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 
+import { TwitchInterface } from './interface_twitch.js'
+
+
 const renderWidth = 1920;
 const renderHeight = 1080;
 
 
 // VARS
 let then = 0;
+
+let swapRemainingTime = 0;
+let swapTimer = null;
+
+
+const obsWs = new OBSWebSocket();
+obsWs.connect({ address: 'localhost:4444' });
+
+
+const client = new tmi.Client({
+    options: { debug: true, messagesLogLevel: "info" },
+    connection: { reconnect: true },
+    channels: [ 'diffty' ]
+});
+client.connect().catch(console.error);
+
+
+function swapCams() {
+    obsWs.send("SetSceneItemProperties", {
+        "scene-name": "1_MAIN",
+        "item": "CAM_MainCam",
+        "visible": true
+    });
+    obsWs.send("SetSceneItemProperties", {
+        "scene-name": "_TiltedCam",
+        "item": "CAM_Game",
+        "visible": true
+    });
+}
+
+
+function unswapCams() {
+    obsWs.send("SetSceneItemProperties", {
+        "scene-name": "1_MAIN",
+        "item": "CAM_MainCam",
+        "visible": false
+    });
+    obsWs.send("SetSceneItemProperties", {
+        "scene-name": "_TiltedCam",
+        "item": "CAM_Game",
+        "visible": false
+    });
+}
 
 
 // ******** THREEJS STUFF ********
@@ -163,10 +209,111 @@ let twitchPubSubIfc = new TwitchPubSubInterface(config.TWITCH_BEARER_TOKEN, (msg
                 console.log(userMessage);
                 lcdDisplay.setColor(userMessage);
             }
+
+            if (msgContent.data.redemption.reward.title == "SWAPITY SWAP") {
+                swapRemainingTime = 30000;
+
+                swapCams();
+
+                if (swapTimer != null) {
+                    clearTimeout(swapTimer);
+                }
+                swapTimer = setTimeout(
+                    () => {
+                        unswapCams();
+                        clearTimeout(swapTimer);
+                    },
+                    swapRemainingTime
+                );
+            }
+
+            if (msgContent.data.redemption.reward.title == "LIGHTS OUT") {
+                var request = new XMLHttpRequest();
+                request.open('GET', 'http://192.168.1.33:5000/lights/set/0');
+                request.send();
+
+                request.onload = async function () {
+                    var data = await JSON.parse(this.response);
+                    console.log(data);
+                }
+            }
+
+            if (msgContent.data.redemption.reward.title == "SHINE IN") {
+                var request = new XMLHttpRequest();
+                request.open('GET', 'http://192.168.1.33:5000/lights/set/1');
+                request.send();
+
+                request.onload = async function () {
+                    var data = await JSON.parse(this.response);
+                    console.log(data);
+                }
+            }
         }
     }
 })
 twitchPubSubIfc.connect();
+
+function makeLightsBlink(speed, duration) {
+    var request = new XMLHttpRequest();
+    request.open('GET', `http://192.168.1.33:5000/lights/blink/?speed=${speed}&duration=${duration}`);
+    request.send();
+
+    request.onload = async function () {
+        var data = await JSON.parse(this.response);
+        console.log(data);
+    }
+}
+
+setInterval(
+    () => {
+        twitchIfc.watchNewFollowers(
+            config.TWITCH_USER_ID,
+            (newFollowers) => {
+                if (newFollowers.length > 0) {
+                    makeLightsBlink(5, 10 * newFollowers.length);
+                }
+
+                for (let i in newFollowers) {
+                    let user = newFollowers[i];
+                    console.log(user)
+
+                    let newFollowMsgComponent = new TextBufferComponent(
+                        `${user.from_name} just followed <3`
+                    );
+                    newFollowMsgComponent.setIsOneShot(true);
+                    newFollowMsgComponent.duration = 10000;
+                
+                    let bounceEffect = new BounceBufferEffect(tickerSystemInstance.tickerSize);
+                    bounceEffect.setLooped(true);
+                    bounceEffect.play();
+                    newFollowMsgComponent.addEffect(bounceEffect);
+                
+                    tickerSystemInstance.componentsStack.unshift(newFollowMsgComponent);
+                    tickerSystemInstance.switchToNextComponent();
+                }
+            });
+    },
+    20000
+);
+
+
+client.on('raided', (channel, username, viewers) => {
+    let raidMsgComponent = new TextBufferComponent(
+        `${username} just raided with ${viewers} beautiful persons`
+    );
+    raidMsgComponent.setIsOneShot(true);
+    raidMsgComponent.duration = 10000;
+
+    let bounceEffect = new BounceBufferEffect(tickerSystemInstance.tickerSize);
+    bounceEffect.setLooped(true);
+    bounceEffect.play();
+    raidMsgComponent.addEffect(bounceEffect);
+
+    tickerSystemInstance.componentsStack.unshift(raidMsgComponent);
+    tickerSystemInstance.switchToNextComponent();
+
+    makeLightsBlink(5, 10);
+});
 
 
 function animate(now) {
@@ -174,6 +321,8 @@ function animate(now) {
     
     const deltaTime = now - then;
     then = now;
+
+    //physicsWorld.stepSimulation( deltaTime, 10 );
 
     tickerSystemInstance.update(deltaTime);
     tickerSystemInstance.draw(deltaTime);
