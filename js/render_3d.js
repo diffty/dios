@@ -11,8 +11,8 @@ import { TwitchInterface } from './interface_twitch.js'
 
 
 // CONSTS
-const renderWidth = 1920;
-const renderHeight = 1080;
+const renderWidth = 1280;
+const renderHeight = 720;
 
 const COLOR_TABLE = {
     "red": "#FF0000",
@@ -30,7 +30,50 @@ const HEX_LAXIST_REGEX = new RegExp(/#?([a-z0-9]{6})/i);
 const HEX_REAL_REGEX = new RegExp(/#?([a-f0-9]{6})/i);
 
 
+function get(object, key, default_value) {
+    var result = object[key];
+    return (typeof result !== "undefined") ? result : default_value;
+}
 
+
+let urlVars = getUrlVars();
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+};
+
+var camPosArgs = get(urlVars, "campos", "");
+if (camPosArgs) {
+    camPosArgs = camPosArgs.split(",").map(x => parseFloat(x.trim()));
+}
+else {
+    camPosArgs = [];
+}
+var camRotArgs = get(urlVars, "camrot", "");
+if (camRotArgs) {
+    camRotArgs = camRotArgs.split(",").map(x => parseFloat(x.trim()));
+}
+else {
+    camRotArgs = [];
+}
+
+var objPosArgs = get(urlVars, "objpos", "");
+if (objPosArgs) {
+    objPosArgs = objPosArgs.split(",").map(x => parseFloat(x.trim()));
+}
+else {
+    objPosArgs = [];
+}
+var objRotArgs = get(urlVars, "objrot", "");
+if (objRotArgs) {
+    objRotArgs = objRotArgs.split(",").map(x => parseFloat(x.trim()));
+}
+else {
+    objRotArgs = [];
+}
 
 
 // VARS
@@ -54,13 +97,13 @@ client.connect().catch(console.error);
 
 function swapCams() {
     obsWs.send("SetSceneItemProperties", {
-        "scene-name": "1_MAIN",
+        "scene-name": "_Swapity",
         "item": "CAM_MainCam",
         "visible": true
     });
     obsWs.send("SetSceneItemProperties", {
         "scene-name": "_TiltedCam",
-        "item": "CAM_Game",
+        "item": "_MainCapture",
         "visible": true
     });
 }
@@ -68,13 +111,13 @@ function swapCams() {
 
 function unswapCams() {
     obsWs.send("SetSceneItemProperties", {
-        "scene-name": "1_MAIN",
+        "scene-name": "_Swapity",
         "item": "CAM_MainCam",
         "visible": false
     });
     obsWs.send("SetSceneItemProperties", {
         "scene-name": "_TiltedCam",
-        "item": "CAM_Game",
+        "item": "_MainCapture",
         "visible": false
     });
 }
@@ -90,8 +133,17 @@ var gltfLoader = new GLTFLoader();
 var scene = new THREE.Scene();
 //scene.background = new THREE.Color(0, 0, 0);
 var camera = new THREE.PerspectiveCamera( 50, renderWidth / renderHeight, 0.1, 1000 );
-camera.position.y = 0.5;
-camera.position.z = 2;
+//camera.position.y = 0.5;
+//camera.position.z = 2;
+
+for (let i = 0; i < camPosArgs.length; i++) {
+    camera.position[String.fromCharCode('x'.charCodeAt(0) + i)] = camPosArgs[i];
+}
+
+for (let i = 0; i < camRotArgs.length; i++) {
+    camera.rotation[String.fromCharCode('x'.charCodeAt(0) + i)] = camRotArgs[i];
+}
+
 
 // LCD DISPLAY
 var lcdDisplay = new LcdDisplay();
@@ -113,16 +165,59 @@ function applyTickerMat(sceneElement, materialToApply) {
     }
 }
 
+var collisionConfiguration;
+var dispatcher;
+var broadphase;
+var solver;
+var physicsWorld;
+
+/*
+Ammo().then(function(Ammo) {
+    function initPhysics() {
+        collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+        dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
+        broadphase = new Ammo.btDbvtBroadphase();
+        solver = new Ammo.btSequentialImpulseConstraintSolver();
+        physicsWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+        physicsWorld.setGravity( new Ammo.btVector3( 0, -9.82, 0 ) );
+    }
+
+    initPhysics();
+});*/
+
 
 gltfLoader.load(
     "./models/ticker_pager.gltf",
     function (gltf) {
         applyTickerMat(gltf.scene, lcdDisplay.material);
-        gltf.scene.position.z = -1;
-        gltf.scene.rotation.y = 0.2
+        //gltf.scene.position.z = -1;
+        //gltf.scene.rotation.y = 0.2
+        
+        for (let i = 0; i < objPosArgs.length; i++) {
+            gltf.scene.position[String.fromCharCode('x'.charCodeAt(0) + i)] = objPosArgs[i];
+        }
+        
+        for (let i = 0; i < objRotArgs.length; i++) {
+            gltf.scene.rotation[String.fromCharCode('x'.charCodeAt(0) + i)] = objRotArgs[i];
+        }
+        
         scene.add(gltf.scene);
     }
 )
+
+/*
+gltfLoader.load(
+    "./models/character.gltf",
+    function (gltf) {
+        gltf.scene.position.x = -1;
+        gltf.scene.rotation.y = 0.2
+        gltf.scene.scale.x = 0.3;
+        gltf.scene.scale.y = 0.3;
+        gltf.scene.scale.z = 0.3;
+        scene.add(gltf.scene);
+    }
+)
+*/
 
 const light = new THREE.PointLight(0xffffff, 1, 10);
 light.position.z = 2;
@@ -228,7 +323,7 @@ let twitchPubSubIfc = new TwitchPubSubInterface(config.TWITCH_BEARER_TOKEN, (msg
                 let regRes = HEX_LAXIST_REGEX[Symbol.match](userMessage);
 
                 if (regRes) {
-                    if (regRes[1].toUpperCase() == "NI69CE") {
+                    if (["NI69CE", "LGBTQI"].includes(regRes[1].toUpperCase())) {
                         lcdDisplay.setColorFunc((i, c) => {
                             let timeOffset = Math.floor(Date.now() * 0.01) % 16;
                             let idx = parseInt(i);
