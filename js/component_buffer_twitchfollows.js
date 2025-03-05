@@ -28,7 +28,7 @@ class TwitchFollowsComponent extends Animable(BaseBufferComponent) {
             this.userId,
             (followersList) => {
                 this.twitchInterface.getUsersFromId(
-                    followersList.map(f => f.from_id),
+                    followersList.map(f => f.user_id),
                     (userList) => {
                         let buffer = "";
                         this.followers = [];

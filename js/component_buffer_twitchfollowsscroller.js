@@ -16,7 +16,7 @@ class TwitchFollowsScrollerComponent extends BaseBufferComponent {
             this.userId,
             (followersList) => {
                 this.twitchInterface.getUsersFromId(
-                    followersList.map(f => f.from_id),
+                    followersList.map(f => f.user_id),
                     (userList) => {
                         this.followers = userList;
                         this.setBuffer(userList.map(u => u.display_name).join(" — "));

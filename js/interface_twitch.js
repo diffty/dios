@@ -6,11 +6,19 @@ export class TwitchInterface {
 
         this.scopeList = [
             "bits:read",
-            "channel:read:redemptions",
+            "channel:read:goals",
             "channel:read:hype_train",
+            "channel:read:polls",
+            "channel:read:predictions",
+            "channel:read:redemptions",
             "channel:read:subscriptions",
-            "user:read:broadcast",
+            "moderation:read",
+            "moderator:read:followers",
+            "user:read:follows",
+            "user:read:subscriptions",
         ];
+
+        // bits:read channel:read:goals channel:read:hype_train channel:read:polls channel:read:predictions channel:read:redemptions channel:read:subscriptions moderation:read moderator:read:followers user:read:follows user:read:subscriptions
 
         this.watchUserId = -1; 
         this.watchUserFollowers = [];
@@ -65,7 +73,7 @@ export class TwitchInterface {
     getFollowers(userId, callback) {
         $.ajax({
             type: "GET",
-            url: "https://api.twitch.tv/helix/users/follows?to_id=" + userId.toString(),
+            url: "https://api.twitch.tv/helix/channels/followers?broadcaster_id=" + userId.toString(),
             dataType: "json",
             headers: this.generateHeader(),
             error: function(response) { console.log("Failed getFollowers: status " + response.status) },
